@@ -1,0 +1,41 @@
+body {
+    background: linear-gradient(to bottom, #000000, #808080); /* Red to blue gradient */
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vw;
+}
+
+.navbar {
+    background-image: linear-gradient(to bottom, #808080, #000000);
+    color: white; /* Text color */
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-text {
+    margin-left: 10px; /* Add some space between the image and text */
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between; /* Distribute buttons evenly */
+  margin-top: 200px;
+}
+
+.large-button {
+  padding: 20px 40px; /* Adjust padding to make the buttons large */
+  font-size: 18px; /* Adjust font size */
+  background-color: #fff; /* Button background color */
+  color: #fff; /* Button text color */
+  border: none; /* Remove button border */
+  border-radius: 8px; /* Add border radius for rounded corners */
+  cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+.large-button:hover {
+  background-color: #0056b3; /* Darker background color on hover */
+}
