@@ -29,4 +29,4 @@ def load_encryption_types():
 
     return results
   
-load_encryption_types()
+  
