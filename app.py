@@ -1,17 +1,18 @@
 
 from flask import Flask, render_template, jsonify
-from database import load_encryption_types
+import database
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def index():
-    return render_template("home.html")
+    cryptography_types = database.load_cryptography_types
+    return render_template("home.html", cryptography_types)
 
 @app.route("/api/encryption_types")
 def show_encryption_types():
-    return jsonify(load_encryption_types)
+    return jsonify(database.load_encryption_types)
 
 
 if __name__ == "__main__":

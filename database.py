@@ -18,6 +18,11 @@ connection = pymysql.connect(
   write_timeout=timeout,
 )
 
+def load_cryptography_types():
+  with connection.cursor() as cursor:
+    cursor.execute("select id, crypt_type, display_name from cryptography_types ")
+    results = cursor.fetchall()
+
 def load_encryption_types():
   with connection.cursor() as cursor:
     cursor.execute("select cte.enum_type, ct.crypt_type from cryptography_types_enum as cte join cryptography_types as ct on cte.id = ct.id where ct.id = 1")
