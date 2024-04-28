@@ -1,5 +1,37 @@
-<div class="button-container container-fluid">
-  <button class="large-button">Encrypt</button>
-  <button class="large-button">Hash</button>
-  <button class="large-button">Tokenize</button>
+<div id="buttonContainer" class="button-container container-fluid">
+  {% for cryptography_type in cryptography_types %}
+  <button
+    id="{{ 'crypt-btn-' ~ cryptography_type['id']}}"
+    data-id="{{ cryptography_type['id'] }}"
+    class="large-button"
+    onclick="crypt_button_click(this.getAttribute('data-id'))"
+  >
+    {{ cryptography_type['display_name'] }}
+  </button>
+  {% endfor %}
 </div>
+
+<script>
+  function crypt_button_click(cryptoTypeId) {
+    const data = { info: cryptoTypeId };
+    fetch("/internal/crypt_type_id", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Redirect to a different URL upon success
+          window.location.href = "http://127.0.0.1:3000/cryptography";
+        } else {
+          // Display failure message
+          alert("Failed to process the request. Please try again.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+</script>

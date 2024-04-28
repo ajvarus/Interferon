@@ -20,18 +20,21 @@ connection = pymysql.connect(
 
 def load_cryptography_types():
   with connection.cursor() as cursor:
-    cursor.execute("select id, crypt_type, display_name from cryptography_types ")
+    cursor.execute("select id, crypt_type, display_name from cryptography_types")
     results = cursor.fetchall()
+    return results
 
-def load_encryption_types():
+
+def load_crypt_type_enums(crypt_id):
+  query = """
+    select cte.enum_type, ct.crypt_type 
+    from cryptography_types_enum as cte 
+    join cryptography_types as ct 
+    on cte.id = ct.id 
+    where ct.id = %s
+  """
   with connection.cursor() as cursor:
-    cursor.execute("select cte.enum_type, ct.crypt_type from cryptography_types_enum as cte join cryptography_types as ct on cte.id = ct.id where ct.id = 1")
+    cursor.execute(query, (crypt_id,))
     results = cursor.fetchall()
-   
-    for result in results:
-      if "enum_type" in result and "crypt_type" in result:
-        print(f"{result["enum_type"]}, {result["crypt_type"]}")
 
     return results
-  
-  
