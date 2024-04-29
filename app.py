@@ -12,10 +12,9 @@ def index():
     cryptography_types = database.load_cryptography_types()
     return render_template("home.html", cryptography_types=cryptography_types)
 
-@app.route("/cryptography")
-def show_crypt_page():
+@app.route("/cryptography/<crypt_type>")
+def show_crypt_page(crypt_type):
     crypt_type_enum = database.load_crypt_type_enums(received_data["crypt_id"])
-    print(crypt_type_enum)
     return jsonify(crypt_type_enum)
 
 @app.route("/internal/crypt_type_id", methods = ["POST"])

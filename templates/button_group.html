@@ -3,8 +3,9 @@
   <button
     id="{{ 'crypt-btn-' ~ cryptography_type['id']}}"
     data-id="{{ cryptography_type['id'] }}"
+    data-type="{{ cryptography_type['crypt_type'] }}"
     class="large-button"
-    onclick="crypt_button_click(this.getAttribute('data-id'))"
+    onclick="crypt_button_click(this.getAttribute('data-id'), this.getAttribute('data-type'))"
   >
     {{ cryptography_type['display_name'] }}
   </button>
@@ -12,7 +13,7 @@
 </div>
 
 <script>
-  function crypt_button_click(cryptoTypeId) {
+  function crypt_button_click(cryptoTypeId, cryptoType) {
     const data = { info: cryptoTypeId };
     fetch("/internal/crypt_type_id", {
       method: "POST",
@@ -24,7 +25,8 @@
       .then((response) => {
         if (response.ok) {
           // Redirect to a different URL upon success
-          window.location.href = "http://127.0.0.1:3000/cryptography";
+          console.log(cryptoType);
+          window.location.href = `http://127.0.0.1:3000/cryptography/${cryptoType}`;
         } else {
           // Display failure message
           alert("Failed to process the request. Please try again.");
