@@ -55,6 +55,20 @@ body {
   box-shadow: 0 0 10px rgba(214, 110, 110, 0.5);
 }
 
+/* Styles for cryptography.html */
 .large-button:hover {
   background-color: #303337; /* Darker background color on hover */
 }
+
+.textarea-container {
+  position: relative;
+}
+#sendButton {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+#plaintext {
+  padding-right: 50px; /* Adjust padding to not overlap button */
+}
+/* Styles for cryptography.html end */
