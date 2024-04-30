@@ -2,4 +2,6 @@ flask
 pymysql
 cryptography
 python-dotenv
+pycryptodome
+firebase-admin
 gunicorn
