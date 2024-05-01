@@ -1,40 +1,25 @@
 
 
 from flask import Flask, render_template, jsonify, request
+
 import database
-import user_auth
+from routes.user_auth import user_auth
 from cryptography import handler
-from firebase_admin import auth
+from utils.env_handler import get_base_url
 
 received_data = {}
-
-# Initialize Firebase
-user_auth.init_auth()
+base_url = get_base_url()
 
 app = Flask(__name__)
+app.register_blueprint(user_auth, url_prefix='/auth')
+
 
 @app.route("/")
 def index():
     cryptography_types = database.load_cryptography_types()
-    return render_template("home.html", cryptography_types=cryptography_types)
-
-@app.route('/signup', methods=["POST", "GET"])
-def sign_up():
-    if request.method == "GET":
-        return render_template("signup.html")
-    
-    elif request.method == "POST":
-        data = request.json
-        email = data["email"]
-        password = data["password"]
-        print(email, password)
-
-        try:
-            user = auth.create_user(email=email, password=password)
-            return jsonify({"message": "User created successfully"}), 200
-        
-        except Exception as e:
-            return jsonify({"message": "Failed to create user"}), 500
+    return render_template("home.html", 
+                           cryptography_types=cryptography_types, 
+                           base_url=base_url)
 
 
 @app.route("/cryptography/<crypto_type>", methods = ["GET", "POST"])

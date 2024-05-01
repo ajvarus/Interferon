@@ -110,9 +110,7 @@
     <script>
       function hideMessage() {
         const messageBox = document.getElementById("message-container");
-        console.log(messageBox);
         messageBox.style.display = "none";
-        console.log(messageBox);
       }
 
       function signup_button_click() {
@@ -124,7 +122,7 @@
           password: password,
         };
 
-        fetch("/signup", {
+        fetch("/auth/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
