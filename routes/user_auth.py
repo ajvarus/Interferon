@@ -1,7 +1,9 @@
-from flask import Blueprint, request, render_template, jsonify
+from flask import Blueprint, request, render_template, jsonify, make_response
 import firebase_admin
-from firebase_admin import credentials, auth
-from utils.env_handler import get_firebase_key_path
+from firebase_admin import credentials, auth, exceptions
+from utils.env_handler import get_firebase_key_path, get_firebase_web_api_key
+import requests
+import json
 
 user_auth = Blueprint("user_auth", __name__)
 
@@ -21,7 +23,7 @@ def sign_up():
         data = request.json
         email = data["email"]
         password = data["password"]
-        print(email, password)
+
 
         try:
             user = auth.create_user(email=email, password=password)
@@ -29,3 +31,51 @@ def sign_up():
         
         except Exception as e:
             return jsonify({"message": "Failed to create user"}), 500
+
+
+@user_auth.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+    
+    elif request.method == "POST":
+        data = request.json
+        email = data["email"]
+        password = data["password"]
+        print(email, password)
+
+        payload = json.dumps({
+            "email": email,
+            "password": password,
+            "return_secure_token": True
+        })
+
+        rest_api_url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
+
+        try:
+            user = requests.post(rest_api_url,
+                    params={"key": get_firebase_web_api_key()},
+                    data=payload)
+            print(user.json())
+            user_data = user.json()
+            # Create an HTTP only cookie for the idToken
+            response = make_response(jsonify({'message': 'Authentication successful'}), 200)
+            response.set_cookie('idToken', 
+                                user_data["idToken"], 
+                                httponly=True)
+            return response
+        except Exception as e:
+            print(str(e))
+            return jsonify({'message': 'Authentication failed'}), 401
+             
+
+@user_auth.route("/logout", methods=["POST"])
+def logout():
+    # Create a response with a message indicating successful logout
+    print("Logging out")
+    response = make_response(jsonify({'message': 'Logout successful'}), 200)
+
+    # Clear the idToken cookie by setting its value to an empty string
+    response.set_cookie('idToken', '', expires=0)
+
+    return response

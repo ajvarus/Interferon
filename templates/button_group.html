@@ -26,7 +26,7 @@
         if (response.ok) {
           // Redirect to a different URL upon success
           cryptoTypeLowerCase = cryptoType.toLowerCase();
-          window.location.href = `http://127.0.0.1:3000/cryptography/${cryptoTypeLowerCase}`;
+          window.location.href = `{{ base_url }}/cryptography/${cryptoTypeLowerCase}`;
         } else {
           // Display failure message
           alert("Failed to process the request. Please try again.");

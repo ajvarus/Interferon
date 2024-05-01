@@ -8,3 +8,6 @@ def get_base_url():
 
 def get_firebase_key_path():
     return os.getenv("FIREBASE_KEY_PATH")
+
+def get_firebase_web_api_key():
+    return os.getenv("FIREBASE_WEB_API_KEY")

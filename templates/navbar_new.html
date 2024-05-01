@@ -38,11 +38,18 @@
             Account
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Login</a></li>
+            <li>
+              <a class="dropdown-item" href="{{ base_url }}/auth/login"
+                >Login</a
+              >
+            </li>
             <li>
               <a class="dropdown-item" href="{{ base_url }}/auth/signup"
                 >Sign-up</a
               >
+            </li>
+            <li>
+              <a onclick="logout()" class="dropdown-item" href="#">Logout</a>
             </li>
           </ul>
         </li>
@@ -50,3 +57,27 @@
     </div>
   </div>
 </nav>
+
+<script>
+  // Example of logout functionality using JavaScript
+  function logout() {
+    fetch("/auth/logout", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json", // Specify content type as JSON
+      },
+      body: JSON.stringify({}),
+    })
+      .then((response) => {
+        if (response.ok) {
+          window.location.href = "{{ base_url }}/";
+        } else {
+          console.error("Logout failed:", response.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error("Logout failed:", error);
+      });
+  }
+</script>
