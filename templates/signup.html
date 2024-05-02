@@ -129,12 +129,20 @@
           },
           body: JSON.stringify(data),
         })
-          .then((response) => response.json())
-          .then((data) => {
+          .then((response) => {
+            const data = response.json;
             const messageBox = document.getElementById("message-container");
             const messageContent = document.getElementById("message-content");
-            messageContent.textContent = data.message; // Set the message from server
+
+            if (response.ok) {
+              messageContent.textContent = "User creation successful";
+            } else {
+              messageContent.textContent = data.message;
+            }
+
+            // Set the message from server
             messageBox.style.display = "block";
+            window.location.href = "{{ base_url }}";
           })
           .catch((error) => {
             console.log(error);

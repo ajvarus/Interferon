@@ -3,7 +3,7 @@
 from flask import Flask, render_template, jsonify, request
 
 import database
-from routes.user_auth import user_auth
+from routes.user_auth import user_auth, verify_id_token
 from cryptography import handler
 from utils.env_handler import get_base_url
 
@@ -49,8 +49,9 @@ def receive_crypt_id():
 
 # Endpoints for third-party services
 @app.route("/api/encryption_types")
+@verify_id_token
 def show_encryption_types():
-    return jsonify(database.load_encryption_types())
+    return jsonify(database.load_cryptography_types())
 
 
 if __name__ == "__main__":
