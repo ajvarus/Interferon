@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup success</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(to bottom right, #f8f8f8, #fff);
+        margin: 0;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      h2 {
+        color: #555;
+        max-width: 600px;
+        text-align: center;
+      }
+
+      p {
+        font-size: 24px;
+        font-weight: bold;
+        border: 1px solid #ccc;
+        padding: 10px;
+        background-color: white;
+        width: fit-content;
+        margin-top: 20px;
+        overflow: hidden;
+        white-space: nowrap;
+        border-radius: 4px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      @keyframes typewriter {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      .typewriter {
+        animation: typewriter 4s steps(40) 1s 1 normal both;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>You're in.</h1>
+    <h2>
+      This is your master key. You might need it in the future. Keep it safe.
+    </h2>
+    <p id="masterKey" class="typewriter">{{ master_key }}</p>
+    <!-- Additional content here -->
+    <script>
+      // Simulate loading the master key with typewriter effect
+      const masterKeyText = "{{ master_key }}"; // Replace '{{ master_key }}' with the actual key in your application logic
+      const displayElement = document.getElementById("masterKey");
+
+      displayElement.textContent = "";
+      let i = 0;
+      function typeWriter() {
+        if (i < masterKeyText.length) {
+          displayElement.textContent += masterKeyText.charAt(i);
+          i++;
+          setTimeout(typeWriter, 100); // Adjust typing speed
+        }
+      }
+
+      // Start typing effect after a slight delay
+      setTimeout(typeWriter, 1000);
+    </script>
+  </body>
+</html>

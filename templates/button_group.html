@@ -7,7 +7,10 @@
     class="large-button"
     onclick="crypt_button_click(this.getAttribute('data-id'), this.getAttribute('data-type'))"
   >
-    {{ cryptography_type['display_name'] }}
+    <span style="padding-bottom: 10px">
+      {{ cryptography_type['display_name'] }}
+    </span>
+    <span class="lock-icon">&#128274;</span>
   </button>
   {% endfor %}
 </div>

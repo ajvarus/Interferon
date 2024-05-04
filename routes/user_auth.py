@@ -1,9 +1,12 @@
-from flask import Blueprint, request, render_template, jsonify, make_response
+from flask import Blueprint, request, render_template, jsonify, make_response, redirect, session, url_for
 import firebase_admin
 from firebase_admin import credentials, auth
-from utils.env_handler import get_firebase_key_path, get_firebase_web_api_key, get_base_url
 import requests
 import json
+from base64 import b64encode
+
+from utils.env_handler import get_firebase_key_path, get_firebase_web_api_key, get_base_url
+from cryptography.key_gen import generate_master_key
 
 user_auth = Blueprint("user_auth", __name__)
 
@@ -27,10 +30,28 @@ def sign_up():
         try:
             user = auth.create_user(email=email, password=password)
             response = signin_with_email_and_password(email, password)
-            return response
-        
+
+            if response.status_code == 200:
+                master_key = generate_master_key(password)
+                session["master_key"] = master_key
+
+                return jsonify(response.get_json())
+                # return redirect(url_for("user_auth.signup_success"))
+            else:
+                raise Exception("Failed to create user")
+    
         except Exception as e:
             return jsonify({"message": "Failed to create user"}), 500
+
+@user_auth.route('/signup_success')
+def signup_success():
+    master_key = session.pop("master_key") # Remove master key from session after retrieval
+    if master_key:
+        encoded_master_key = b64encode(master_key).decode()
+        return render_template('signup_success.html', master_key=encoded_master_key)
+    else:
+        print("No master key found.")
+        return redirect(url_for('signup'))
 
 
 @user_auth.route("/login", methods=["GET", "POST"])
@@ -92,7 +113,6 @@ def signin_with_email_and_password(email, password):
         user = requests.post(rest_api_url,
                 params={"key": get_firebase_web_api_key()},
                 data=payload)
-        print(user.json())
         user_data = user.json()
         # Create an HTTP only cookie for the idToken
         response = make_response(jsonify({'message': 'Login successful'}), 200)

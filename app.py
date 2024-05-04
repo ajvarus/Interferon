@@ -5,12 +5,13 @@ from flask import Flask, render_template, jsonify, request
 import database
 from routes.user_auth import user_auth, verify_id_token
 from cryptography import handler
-from utils.env_handler import get_base_url
+from utils.env_handler import get_base_url, get_app_secret_key
 
 received_data = {}
 base_url = get_base_url()
 
 app = Flask(__name__)
+app.secret_key = get_app_secret_key()
 app.register_blueprint(user_auth, url_prefix='/auth')
 
 
@@ -55,4 +56,4 @@ def show_encryption_types():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=3000)
+    app.run(host="0.0.0.0", debug=True, port=3000)

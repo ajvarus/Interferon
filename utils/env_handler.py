@@ -11,3 +11,6 @@ def get_firebase_key_path():
 
 def get_firebase_web_api_key():
     return os.getenv("FIREBASE_WEB_API_KEY")
+
+def get_app_secret_key():
+    return os.getenv("APP_SECRET_KEY")

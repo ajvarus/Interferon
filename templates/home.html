@@ -30,13 +30,30 @@
   <body>
     <div id="body-container" class="container-fluid">
       {% include 'navbar_new.html' %}
-      <p class="main-paragraph">
-        Interferon aims to provide you with a range of cryptographic services,
-        starting with encryption and decryption, hashing and unhashing and token
-        generation all in one place. Everyday you visit Interferon, the feature
-        set will be enhanced. Don't stop coming!
-      </p>
-      {% include 'button_group.html' %}
+      <div class="main-content">
+        <div class="container">
+          <p
+            id="typewriter"
+            class="main-paragraph"
+            style="
+              color: lightskyblue;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            "
+          >
+            Interferon aims to provide you with a range of cryptographic
+            services, starting with encryption and decryption, hashing and
+            unhashing and token generation all in one place. Everyday you visit
+            Interferon, the feature set will be enhanced. Don't stop coming!
+          </p>
+        </div>
+        {% include 'button_group.html' %}
+        <div class="container mt-5 text-center">
+          <button class="btn btn-primary btn-lg me-3">Log In</button>
+          <button class="btn btn-secondary btn-lg">Sign Up</button>
+        </div>
+      </div>
     </div>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
