@@ -6,7 +6,12 @@ dotenv.load_dotenv()
 def get_base_url(host_address:str):
     host_address = host_address.split(":")
     host = host_address[0]
-    port = host_address[1]
+
+    try:
+        port = host_address[1]
+    except IndexError:
+        port = ""
+        
     host_base_url = f"http://{host}:{port}"
     return host_base_url
 
