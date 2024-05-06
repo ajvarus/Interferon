@@ -1,5 +1,5 @@
 import database as db
-import cryptography.encryption as enc
+import crypto.encryption as enc
 
 
 def handler(enum_id:int, text:str, key=None, encrypt=True):

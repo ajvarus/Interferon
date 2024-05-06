@@ -4,7 +4,7 @@ from flask import Flask, render_template, jsonify, request
 
 import database
 from routes.user_auth import user_auth, verify_id_token
-from cryptography import handler
+from crypto import handler
 from utils.env_handler import get_base_url, get_app_secret_key
 
 received_data = {}

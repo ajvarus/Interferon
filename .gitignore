@@ -5,3 +5,6 @@ pyvenv.cfg
 .env
 __pycache__
 serviceAccountKey.json
+
+# MacOS Debugger config
+launch.json

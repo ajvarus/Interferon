@@ -1,6 +1,9 @@
 import pymysql
 import dotenv
 import os
+from typing import Callable, Any
+
+from crypto import key_gen
 
 dotenv.load_dotenv()
 
@@ -59,3 +62,51 @@ def load_crypt_type_enums(crypt_id):
     results = cursor.fetchall()
 
     return results
+  
+def load_all_crypt_enums():
+  query = '''
+    select enum_id
+    from cryptography_types_enum
+  '''
+  with connection.cursor() as cursor:
+    cursor.execute(query)
+    results = cursor.fetchall()
+
+    return results
+  
+def create_user(uid:str, master_key:bytes):
+  query = '''
+    insert into users (firebase_uid, master_key)
+    values (%s, %s)
+  '''
+  try: 
+    with connection.cursor() as cursor:
+      cursor.execute(query, (uid, master_key))
+      connection.commit()
+    return True
+  except Exception as e:
+    return False
+  
+def insert_keys_into_enum_table(uid:str,
+                                enum_ids: list, 
+                                derived_key: Callable[[int], bytes], 
+                                master_key: str):
+  query = '''
+    INSERT INTO derived_keys (firebase_uid, derived_key, enum_id)
+    VALUES (%s, %s, %s)
+  '''
+
+  update_values = [(uid, 
+                    derived_key(master_key),  
+                    row["enum_id"]) 
+                    for row in enum_ids]
+
+  print(update_values)
+
+  try: 
+    with connection.cursor() as cursor:
+      cursor.executemany(query, update_values)
+      connection.commit()
+    return True
+  except Exception as e:
+    return False

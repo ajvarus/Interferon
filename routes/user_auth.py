@@ -4,9 +4,11 @@ from firebase_admin import credentials, auth
 import requests
 import json
 from base64 import b64encode
+import asyncio
 
 from utils.env_handler import get_firebase_key_path, get_firebase_web_api_key, get_base_url
-from cryptography.key_gen import generate_master_key
+from crypto.key_gen import generate_master_key, generate_derived_key
+import database as db
 
 user_auth = Blueprint("user_auth", __name__)
 
@@ -29,6 +31,9 @@ def sign_up():
 
         try:
             user = auth.create_user(email=email, password=password)
+           
+            session["uid"] = user.uid
+
             response = signin_with_email_and_password(email, password)
 
             if response.status_code == 200:
@@ -48,9 +53,18 @@ def signup_success():
     master_key = session.pop("master_key") # Remove master key from session after retrieval
     if master_key:
         encoded_master_key = b64encode(master_key).decode()
+        enums = db.load_all_crypt_enums()
+        uid = session.pop("uid")
+
+        user_created = db.create_user(uid, master_key)
+
+        is_inserted = db.insert_keys_into_enum_table(uid,
+                                                     enums, 
+                                                     generate_derived_key, 
+                                                     encoded_master_key)
+
         return render_template('signup_success.html', master_key=encoded_master_key)
     else:
-        print("No master key found.")
         return redirect(url_for('signup'))
 
 
@@ -81,6 +95,7 @@ def logout():
 
     return response
 
+# The below decorators are used for session management
 def verify_id_token(func):
     def wrapper(*args, **kwargs):
         try:
