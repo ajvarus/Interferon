@@ -14,3 +14,9 @@ def get_firebase_web_api_key():
 
 def get_app_secret_key():
     return os.getenv("APP_SECRET_KEY")
+
+def get_celery_broker_url():
+    return os.getenv("CELERY_BROKER_URL")
+
+def get_celery_result_backend():
+    return os.getenv("CELERY_RESULT_BACKEND")

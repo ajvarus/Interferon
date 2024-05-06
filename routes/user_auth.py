@@ -4,11 +4,11 @@ from firebase_admin import credentials, auth
 import requests
 import json
 from base64 import b64encode
-import asyncio
 
 from utils.env_handler import get_firebase_key_path, get_firebase_web_api_key, get_base_url
 from crypto.key_gen import generate_master_key, generate_derived_key
 import database as db
+import celerify as cl
 
 user_auth = Blueprint("user_auth", __name__)
 
@@ -53,16 +53,19 @@ def signup_success():
     master_key = session.pop("master_key") # Remove master key from session after retrieval
     if master_key:
         encoded_master_key = b64encode(master_key).decode()
-        enums = db.load_all_crypt_enums()
         uid = session.pop("uid")
 
-        user_created = db.create_user(uid, master_key)
+        cl.handle_signup_process.apply_async(args=[uid, master_key, encoded_master_key], link=cl.signup_success_callback.si())
 
-        is_inserted = db.insert_keys_into_enum_table(uid,
-                                                     enums, 
-                                                     generate_derived_key, 
-                                                     encoded_master_key)
 
+        # enums = db.load_all_crypt_enums()
+
+        # user_created = db.create_user(uid, master_key)
+
+        # is_inserted = db.insert_keys_into_enum_table(uid,
+        #                                              enums, 
+        #                                              generate_derived_key, 
+        #                                              encoded_master_key)
         return render_template('signup_success.html', master_key=encoded_master_key)
     else:
         return redirect(url_for('signup'))

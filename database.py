@@ -1,9 +1,7 @@
 import pymysql
 import dotenv
 import os
-from typing import Callable, Any
-
-from crypto import key_gen
+from typing import Callable
 
 dotenv.load_dotenv()
 
@@ -88,8 +86,8 @@ def create_user(uid:str, master_key:bytes):
     return False
   
 def insert_keys_into_enum_table(uid:str,
-                                enum_ids: list, 
-                                derived_key: Callable[[int], bytes], 
+                                enum_ids: list[dict], 
+                                derived_key: bytes, 
                                 master_key: str):
   query = '''
     INSERT INTO derived_keys (firebase_uid, derived_key, enum_id)
@@ -97,7 +95,7 @@ def insert_keys_into_enum_table(uid:str,
   '''
 
   update_values = [(uid, 
-                    derived_key(master_key),  
+                    derived_key,  
                     row["enum_id"]) 
                     for row in enum_ids]
 

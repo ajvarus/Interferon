@@ -3,16 +3,25 @@
 from flask import Flask, render_template, jsonify, request
 
 import database
+import celerify
 from routes.user_auth import user_auth, verify_id_token
 from crypto import handler
-from utils.env_handler import get_base_url, get_app_secret_key
+from utils.env_handler import get_base_url, get_app_secret_key, get_celery_broker_url, get_celery_result_backend
+
 
 received_data = {}
 base_url = get_base_url()
 
 app = Flask(__name__)
+app.config.update(
+    CELERY_BROKER_URL=get_celery_broker_url(),
+    CELERY_RESULT_BACKEND=get_celery_result_backend()
+)
 app.secret_key = get_app_secret_key()
 app.register_blueprint(user_auth, url_prefix='/auth')
+
+# Create a Celery app
+celery = celerify.make_celery(app)
 
 
 @app.route("/")
