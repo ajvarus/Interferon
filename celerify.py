@@ -23,7 +23,7 @@ def create_user_task(uid, master_key):
         raise ValueError("Failed to create user")
 
 @shared_task
-def insert_keys_task(enum_ids, uid, master_key, ):
+def insert_keys_task(enum_ids, uid, master_key):
    
     if db.insert_keys_into_enum_table(uid, 
                                       enum_ids, 
@@ -33,17 +33,25 @@ def insert_keys_task(enum_ids, uid, master_key, ):
     else:
         raise ValueError("Failed to insert keys")
 
+
 # You could chain these tasks together as a separate shared task.
 @shared_task
-def handle_signup_process(uid, master_key, encoded_master_key):
+def handle_keygen(uid, encoded_master_key):
     print("In the process")
     result = chain(
-        create_user_task.s(uid, master_key),
         load_crypt_enums_task.si(),
         insert_keys_task.s(uid, encoded_master_key)
     )()
     print("Didn't make it out")
     return {"status": "Chain started", "task_id": result.id}
+
+@shared_task
+def handle_user_creation(uid, master_key):
+    result = chain(
+        create_user_task.s(uid, master_key),
+        signup_success_callback.si()
+    )() 
+    return result
 
 @shared_task
 def signup_success_callback():
