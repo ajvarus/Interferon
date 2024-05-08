@@ -4,4 +4,6 @@ cryptography
 python-dotenv
 pycryptodome
 firebase-admin
+redis
+celery
 gunicorn
