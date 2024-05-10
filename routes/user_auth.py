@@ -20,7 +20,28 @@ try:
 except Exception as e:
     print(f"Error: {str(e)}")
 
-    
+
+# The below decorators are used for session management
+def verify_id_token(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            id_token = request.cookies["idToken"]
+            # Verify the ID token
+            decoded_token = auth.verify_id_token(id_token)
+            # Extract UID from the decoded token
+            uid = decoded_token['uid']
+            print(uid)
+            # Pass the UID to the route function
+            return func(*args, **kwargs)
+        except KeyError:
+            return jsonify({'error': 'Authorization header missing'}), 401
+        except auth.InvalidIdTokenError:
+            return jsonify({'error': 'Invalid ID token'}), 401
+
+    return wrapper
+
+
 @user_auth.route('/signup', methods=["POST", "GET"])
 def sign_up():
     if request.method == "GET":
@@ -54,6 +75,7 @@ def sign_up():
             return jsonify({"message": "Failed to create user"}), 500
 
 @user_auth.route('/signup_success')
+@verify_id_token
 def signup_success():
     master_key = session.pop("master_key") # Remove master key from session after retrieval
     if master_key:
@@ -76,11 +98,22 @@ def login():
         data = request.json
         email = data["email"]
         password = data["password"]
-        print(email, password)
+
+        session["username"] = email
 
         response = signin_with_email_and_password(email, password)
 
-        return response
+        status_code = response.status_code
+
+        if status_code == 200:
+            return response
+        else:
+            session.clear
+            return jsonify({
+                "message": "login failed"
+            })
+
+        
         
 
 @user_auth.route("/logout", methods=["POST"])
@@ -97,25 +130,6 @@ def logout():
 
     return response
 
-# The below decorators are used for session management
-def verify_id_token(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        try:
-            id_token = request.cookies["idToken"]
-            # Verify the ID token
-            decoded_token = auth.verify_id_token(id_token)
-            # Extract UID from the decoded token
-            uid = decoded_token['uid']
-            print(uid)
-            # Pass the UID to the route function
-            return func(*args, **kwargs)
-        except KeyError:
-            return jsonify({'error': 'Authorization header missing'}), 401
-        except auth.InvalidIdTokenError:
-            return jsonify({'error': 'Invalid ID token'}), 401
-
-    return wrapper
 
 @shared_task
 def signin_with_email_and_password(email, password):
