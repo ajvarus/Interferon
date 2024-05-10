@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interferon</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/6b11b2115c.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/vue@3.0.2"></script>
+    <style>
+      .custom-keygen-shadow-button {
+        box-shadow: -8px 8px 16px rgba(207, 112, 112, 0.3); /* Box shadow */
+        transition: box-shadow 0.3s; /* Smooth transition for box shadow */
+      }
+
+      .custom-keygen-shadow-button:hover {
+        box-shadow: -16px 16px 32px rgba(207, 112, 112, 0.5); /* Increased shadow on hover */
+      }
+
+      .custom-encrypt-shadow-button {
+        box-shadow: -8px 8px 16px rgba(105, 171, 195, 0.3); /* Box shadow */
+        transition: box-shadow 0.3s; /* Smooth transition for box shadow */
+      }
+
+      .custom-encrypt-shadow-button:hover {
+        box-shadow: -16px 16px 32px rgba(105, 171, 195, 0.5); /* Increased shadow on hover */
+      }
+
+      .custom-hash-shadow-button {
+        box-shadow: -8px 8px 16px rgba(106, 189, 116, 0.3); /* Box shadow */
+        transition: box-shadow 0.3s; /* Smooth transition for box shadow */
+      }
+
+      .custom-hash-shadow-button:hover {
+        box-shadow: -16px 16px 32px rgba(106, 189, 116, 0.5); /* Increased shadow on hover */
+      }
+
+      .custom-auth-shadow-button {
+        box-shadow: -8px 8px 16px rgba(73, 73, 73, 0.3); /* Box shadow */
+        transition: box-shadow 0.3s; /* Smooth transition for box shadow */
+      }
+
+      .custom-auth-shadow-button:hover {
+        box-shadow: -16px 16px 32px rgba(73, 73, 73, 0.5); /* Increased shadow on hover */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Vue wrapper start -->
+    <div id="app" data-base-url="{{ base_url }}">
+      <!-- Navbar start -->
+      <div class="navbar px-5 py-4 has-shadow is-fixed-top">
+        <div class="navbar-brand">
+          <a href="" class="navbar-item">
+            <span class="icon-text is-size-3">
+              <span class="icon mr-3">
+                <i class="fa-solid fa-bolt"></i>
+              </span>
+              <span class="">Interferon</span>
+            </span>
+          </a>
+        </div>
+        <div class="navbar-menu">
+          <div class="navbar-end">
+            <a href="#" class="navbar-item is-size-5">
+              <span class="icon p-1">
+                <i class="fas fa-book"></i>
+              </span>
+              <span class="p-1"> Docs </span>
+            </a>
+            <div
+              class="navbar-item has-dropdown is-hoverable"
+              id="settingsButton"
+            >
+              <a class="navbar-link is-size-5">
+                <span class="icon p-1">
+                  <i class="fas fa-user-cog"></i>
+                </span>
+                <span class="p-1"> </span>
+              </a>
+              <div class="navbar-dropdown is-right px-3">
+                <a class="navbar-item button is-white" @click="logout()">
+                  Logout
+                </a>
+                <hr class="navbar-divider" />
+                <a class="navbar-item button is-white" disabled
+                  >Report an issue.</a
+                >
+                <hr class="navbar-divider" />
+                <a class="navbar-item button is-white" disabled>
+                  Feature request.
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Navbar end -->
+
+      <!-- Main body start -->
+      <section class="section is-large">
+        <div class="container">
+          <!-- Notification message start -->
+          <div
+            id="indexMessageBox"
+            class="notification is-warning is-light is-hidden has-text-centered"
+          >
+            <button id="indexMessageDeleteButton" class="delete"></button>
+            This feature is currently only available to users who have signed
+            up. If you have, please login to continue.
+          </div>
+          <!-- Notification message end -->
+          <!-- Main text start -->
+          <div class="columns">
+            <div class="column is-3"></div>
+            <div class="column is-6 has-text-centered">
+              <h1
+                class="is-size-1 has-family-primary has-text-weight-medium mb-2 typewriter"
+              >
+                Hello {{username}},
+              </h1>
+              <h2 class="is-size-4 subtitle">
+                Interferon is currently at its nascent stage of development.
+                With support from the community I hope to make Interferon the go
+                to destination for easy crytography. The
+                <strong>Hash feature</strong> is
+                <strong>currently available</strong> for you to get a taste of
+                whats to come.
+              </h2>
+            </div>
+            <div class="column is-3"></div>
+          </div>
+          <!-- Main text end -->
+          <!-- Tag start -->
+          <div class="columns">
+            <div class="column is-3"></div>
+            <div class="column is-6 has-text-centered">
+              <span class="tag is-success is-large m-4 is-light">
+                <button class="card-header-icon pr-3" aria-label="more options">
+                  <span class="icon">
+                    <i class="fas fa-check-circle" aria-hidden="true"></i>
+                  </span>
+                </button>
+                <span> It's free! </span>
+              </span>
+            </div>
+            <div class="column is-3"></div>
+          </div>
+          <!-- Tag end  -->
+
+          <section class="p-5"></section>
+
+          <!-- Bottom buttons start  -->
+          <div class="columns mt-6">
+            <div class="column is-one-quarter">
+              <button
+                id="indexKeygenButton"
+                class="button is-danger is-light is-outlined is-large is-fullwidth p-4 custom-keygen-shadow-button"
+              >
+                <div class="columns is-mobile is-vcentered is-flex">
+                  <div class="column">
+                    <!-- Icon as a logo -->
+                    <span class="icon">
+                      <i class="fas fa-key"></i>
+                    </span>
+                  </div>
+                  <div class="column has-text-left">
+                    <!-- Title and subtitle -->
+                    <p class="title is-4 mb-2">Key-gen.</p>
+                    <!-- Subtitle -->
+                    <p class="subtitle is-5">Ultra fast key-gen.</p>
+                  </div>
+                  <div class="column"></div>
+                  <div class="column"></div>
+                </div>
+              </button>
+            </div>
+            <div class="column is-one-quarter">
+              <a href="#">
+                <button
+                  class="button is-info is-light is-outlined is-large is-fullwidth p-4 custom-encrypt-shadow-button"
+                  id="encryptButton"
+                >
+                  <div class="columns is-mobile is-vcentered is-flex">
+                    <div class="column">
+                      <!-- Icon as a logo -->
+                      <span class="icon">
+                        <i class="fas fa-unlock-alt"></i>
+                      </span>
+                    </div>
+                    <div class="column has-text-left">
+                      <!-- Title and subtitle -->
+                      <p class="title is-4 mb-2">Encrypt.</p>
+                      <!-- Subtitle -->
+                      <p class="subtitle is-5">Easy and fast encryption.</p>
+                    </div>
+                  </div>
+                </button>
+              </a>
+            </div>
+            <div class="column is-one-quarter">
+              <a href="{{base_url}}/cryptography/hash">
+                <button
+                  class="button is-primary is-light is-outlined is-large is-fullwidth p-4 custom-hash-shadow-button"
+                >
+                  <div class="columns is-mobile is-vcentered is-flex">
+                    <div class="column">
+                      <!-- Icon as a logo -->
+                      <span class="icon">
+                        <i class="fas fa-mask"></i>
+                      </span>
+                    </div>
+                    <div class="column has-text-left">
+                      <!-- Title and subtitle -->
+                      <p class="title is-4 mb-2">Hash.</p>
+                      <!-- Subtitle -->
+                      <p class="subtitle is-5">Not the one you think.</p>
+                    </div>
+                    <div class="column"></div>
+                  </div>
+                </button>
+              </a>
+            </div>
+            <div class="column is-one-quarter">
+              <button
+                class="button is-dark is-outlined is-large is-fullwidth p-4 custom-auth-shadow-button"
+              >
+                <div class="columns is-mobile is-vcentered is-flex">
+                  <div class="column">
+                    <!-- Icon as a logo -->
+                    <span class="icon">
+                      <i class="fas fa-user-lock"></i>
+                    </span>
+                  </div>
+                  <div class="column has-text-left">
+                    <!-- Title and subtitle -->
+                    <p class="title is-4 mb-2">Auth.</p>
+                    <!-- Subtitle -->
+                    <p class="subtitle is-5">Tokenized user auth.</p>
+                  </div>
+                  <div class="column"></div>
+                  <div class="column"></div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Bottom buttons end  -->
+      </section>
+      <footer class="footer">
+        <div class="content has-text-centered">
+          <p>
+            <strong>Interferon</strong> by
+            <a href="https://linkedin.com/in/arjunsen7">Arjun Sen</a>. The
+            source code is under
+            <a href="http://opensource.org/licenses/mit-license.php"
+              >MIT license.</a
+            >
+            The project is open source and can be accessed on
+            <a href="https://github.com/ajvarus/Interferon">Github.</a>
+          </p>
+        </div>
+        <div class="has-text-centered">
+          <span>With</span
+          ><span class="icon has-text-danger-65">
+            <i class="fas fa-heart"></i> </span
+          ><span>from blr.</span>
+        </div>
+      </footer>
+    </div>
+    <!-- Vue wrapper end -->
+    <!-- Including JavaScript file for this page -->
+    <script src="{{url_for('static', filename = 'dashboard.js')}}"></script>
+  </body>
+</html>

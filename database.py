@@ -1,7 +1,7 @@
 import pymysql
 import dotenv
 import os
-from typing import Callable
+from celery import shared_task
 
 dotenv.load_dotenv()
 
