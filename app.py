@@ -43,6 +43,7 @@ def show_dashboard():
 
 
 @app.route("/cryptography/<crypt_name>", methods = ["GET", "POST"])
+@verify_id_token
 def show_crypt_page(crypt_name):
     if request.method == "GET":
         try:
@@ -87,5 +88,10 @@ def show_encryption_types():
     return jsonify(db.load_cryptography_types())
 
 
+# Run settings Dev
+# if __name__ == "__main__":
+#     app.run(host="0.0.0.0", debug=True, port=3000)
+
+# Run settings Prod
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True, port=3000)
+    app.run()

@@ -1,0 +1,5 @@
+services:
+  - name: web
+    env: python app.py
+  - name: worker
+    env: celery -A app.celery worker --loglevel=info
