@@ -52,8 +52,8 @@
     </style>
   </head>
   <body>
-    <!-- Wrapping body in Vue component start -->
-    <div id="app">
+    <!-- Vue wrapper start -->
+    <div id="app" data-base-url="{{ base_url }}">
       <!-- Navbar start -->
       <div class="navbar px-5 py-4 has-shadow is-fixed-top">
         <div class="navbar-brand">
@@ -75,7 +75,7 @@
               <span class="p-1"> Docs </span>
             </a>
             <div
-              class="navbar-item has-dropdown is-hoverable is-hidden"
+              class="navbar-item has-dropdown is-hoverable"
               id="settingsButton"
             >
               <a class="navbar-link is-size-5">
@@ -85,9 +85,7 @@
                 <span class="p-1"> </span>
               </a>
               <div class="navbar-dropdown is-right px-3">
-                <a class="navbar-item button is-white"> Dashboard </a>
-                <hr class="navbar-divider" />
-                <a class="navbar-item button is-white" id="logoutButton">
+                <a class="navbar-item button is-white" @click="logout()">
                   Logout
                 </a>
                 <hr class="navbar-divider" />
@@ -111,15 +109,11 @@
           <!-- Notification message start -->
           <div
             id="indexMessageBox"
-            class="notification is-warning is-light has-text-centered"
-            :class="{'is-hidden': !isBoxVisible}"
+            class="notification is-warning is-light is-hidden has-text-centered"
           >
-            <button
-              id="indexMessageDeleteButton"
-              class="delete"
-              @click="messageBoxHide()"
-            ></button>
-            [[ message ]]
+            <button id="indexMessageDeleteButton" class="delete"></button>
+            This feature is currently only available to users who have signed
+            up. If you have, please login to continue.
           </div>
           <!-- Notification message end -->
           <!-- Main text start -->
@@ -129,13 +123,15 @@
               <h1
                 class="is-size-1 has-family-primary has-text-weight-medium mb-2 typewriter"
               >
-                The easy way to do crypto.
+                Hello {{username}},
               </h1>
               <h2 class="is-size-4 subtitle">
-                Interferon is a simple tool that helps you with your
-                cryptography without getting in your way. Generate keys on the
-                fly and communicate, knowing <strong> only you </strong> know
-                what you sent.
+                Interferon is currently at its nascent stage of development.
+                With support from the community I hope to make Interferon the go
+                to destination for easy crytography. The
+                <strong>Hash feature</strong> is
+                <strong>currently available</strong> for you to get a taste of
+                whats to come.
               </h2>
             </div>
             <div class="column is-3"></div>
@@ -157,30 +153,7 @@
             <div class="column is-3"></div>
           </div>
           <!-- Tag end  -->
-          <!-- Signup and signin start  -->
-          <div class="columns">
-            <div class="column is-3"></div>
-            <div class="column is-3">
-              <a href="{{ base_url }}/auth/signup">
-                <button
-                  class="button is-primary is-inverted is-large is-fullwidth"
-                >
-                  Signup
-                </button>
-              </a>
-            </div>
-            <div class="column is-3">
-              <a href="{{ base_url }}/auth/login">
-                <button
-                  class="button is-danger has-text-danger-light has-background-black-ter is-inverted is-large is-fullwidth"
-                >
-                  Login
-                </button>
-              </a>
-            </div>
-            <div class="column is-3"></div>
-          </div>
-          <!-- Signup and signin end  -->
+
           <section class="p-5"></section>
 
           <!-- Bottom buttons start  -->
@@ -189,7 +162,6 @@
               <button
                 id="indexKeygenButton"
                 class="button is-danger is-light is-outlined is-large is-fullwidth p-4 custom-keygen-shadow-button"
-                @click="messageBoxShow($event)"
               >
                 <div class="columns is-mobile is-vcentered is-flex">
                   <div class="column">
@@ -210,53 +182,54 @@
               </button>
             </div>
             <div class="column is-one-quarter">
-              <button
-                class="button is-info is-light is-outlined is-large is-fullwidth p-4 custom-encrypt-shadow-button"
-                id="encryptButton"
-                @click="messageBoxShow($event)"
-              >
-                <div class="columns is-mobile is-vcentered is-flex">
-                  <div class="column">
-                    <!-- Icon as a logo -->
-                    <span class="icon">
-                      <i class="fas fa-unlock-alt"></i>
-                    </span>
+              <a href="#">
+                <button
+                  class="button is-info is-light is-outlined is-large is-fullwidth p-4 custom-encrypt-shadow-button"
+                  id="encryptButton"
+                >
+                  <div class="columns is-mobile is-vcentered is-flex">
+                    <div class="column">
+                      <!-- Icon as a logo -->
+                      <span class="icon">
+                        <i class="fas fa-unlock-alt"></i>
+                      </span>
+                    </div>
+                    <div class="column has-text-left">
+                      <!-- Title and subtitle -->
+                      <p class="title is-4 mb-2">Encrypt.</p>
+                      <!-- Subtitle -->
+                      <p class="subtitle is-5">Easy and fast encryption.</p>
+                    </div>
                   </div>
-                  <div class="column has-text-left">
-                    <!-- Title and subtitle -->
-                    <p class="title is-4 mb-2">Encrypt.</p>
-                    <!-- Subtitle -->
-                    <p class="subtitle is-5">Easy and fast encryption.</p>
-                  </div>
-                </div>
-              </button>
+                </button>
+              </a>
             </div>
             <div class="column is-one-quarter">
-              <button
-                class="button is-primary is-light is-outlined is-large is-fullwidth p-4 custom-hash-shadow-button"
-                @click="messageBoxShow($event)"
-              >
-                <div class="columns is-mobile is-vcentered is-flex">
-                  <div class="column">
-                    <!-- Icon as a logo -->
-                    <span class="icon">
-                      <i class="fas fa-mask"></i>
-                    </span>
+              <a href="{{base_url}}/cryptography/hash">
+                <button
+                  class="button is-primary is-light is-outlined is-large is-fullwidth p-4 custom-hash-shadow-button"
+                >
+                  <div class="columns is-mobile is-vcentered is-flex">
+                    <div class="column">
+                      <!-- Icon as a logo -->
+                      <span class="icon">
+                        <i class="fas fa-mask"></i>
+                      </span>
+                    </div>
+                    <div class="column has-text-left">
+                      <!-- Title and subtitle -->
+                      <p class="title is-4 mb-2">Hash.</p>
+                      <!-- Subtitle -->
+                      <p class="subtitle is-5">Not the one you think.</p>
+                    </div>
+                    <div class="column"></div>
                   </div>
-                  <div class="column has-text-left">
-                    <!-- Title and subtitle -->
-                    <p class="title is-4 mb-2">Hash.</p>
-                    <!-- Subtitle -->
-                    <p class="subtitle is-5">Not the one you think.</p>
-                  </div>
-                  <div class="column"></div>
-                </div>
-              </button>
+                </button>
+              </a>
             </div>
             <div class="column is-one-quarter">
               <button
                 class="button is-dark is-outlined is-large is-fullwidth p-4 custom-auth-shadow-button"
-                @click="messageBoxShow($event)"
               >
                 <div class="columns is-mobile is-vcentered is-flex">
                   <div class="column">
@@ -301,8 +274,8 @@
         </div>
       </footer>
     </div>
-    <!-- Wrapping body in Vue component end -->
+    <!-- Vue wrapper end -->
     <!-- Including JavaScript file for this page -->
-    <script src="{{url_for('static', filename = 'index.js')}}"></script>
+    <script src="{{url_for('static', filename = 'dashboard.js')}}"></script>
   </body>
 </html>

@@ -1,38 +1,33 @@
-function messageBoxToggle(clickedButtonId, boxToHideId) {
-  const clickedButton = document.getElementById(clickedButtonId);
-  const boxToHide = document.getElementById(boxToHideId);
-
-  // Add click event listener to the button
-  clickedButton.addEventListener("click", function () {
-    // Toggle the visibility of the target element
-    boxToHide.classList.toggle("is-hidden");
-  });
-}
-
-messageBoxToggle("indexMessageDeleteButton", "indexMessageBox");
-messageBoxToggle("indexKeygenButton", "indexMessageBox");
-
-function logout() {
-  const logoutButton = document.getElementById("logoutButton");
-
-  logoutButton.addEventListener("click", function () {
-    fetch("/auth/logout", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json", // Specify content type as JSON
+const app = Vue.createApp({
+  delimiters: ["[[", "]]"],
+  data() {
+    return {
+      isBoxVisible: false,
+      message: "",
+      messages: {
+        type1:
+          "This feature is currently under development. If you have signed up, we'll send you an email when it's available.",
+        type2:
+          "This feature is currently only available to users who have signed up. If you have, please login to continue.",
       },
-      body: JSON.stringify({}),
-    })
-      .then((response) => {
-        if (response.ok) {
-          window.location.href = "{{ base_url }}/";
-        } else {
-          console.error("Logout failed:", response.statusText);
-        }
-      })
-      .catch((error) => {
-        console.error("Logout failed:", error);
-      });
-  });
-}
+    };
+  },
+  methods: {
+    messageBoxShow(event) {
+      const buttonText = event.target.textContent;
+
+      if (buttonText === "Not the one you think.") {
+        this.message = this.messages["type2"];
+      } else {
+        this.message = this.messages["type1"];
+      }
+
+      this.isBoxVisible = true;
+    },
+    messageBoxHide() {
+      this.isBoxVisible = false;
+    },
+  },
+});
+
+app.mount("#app");

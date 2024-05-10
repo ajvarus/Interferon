@@ -1,11 +1,11 @@
 
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, session
 
 import database as db
 import celerify
 from routes.user_auth import user_auth, verify_id_token
-from crypto import handler
+from crypto import handler 
 from utils.env_handler import get_base_url, get_app_secret_key, get_celery_broker_url, get_celery_result_backend
 
 
@@ -28,6 +28,19 @@ def index():
     return render_template("index.html",
                            base_url= get_base_url(request.host))
 
+@app.route("/dashboard", methods = ["GET", "POST"])
+@verify_id_token
+def show_dashboard():
+        if request.method == "GET":
+            return render_template("dashboard.html",
+                                username = session.get("username"),
+                                base_url = get_base_url(request.host))
+        
+        if request.method == "POST":
+            return jsonify({
+                "message": "Logout successful"
+            })
+
 
 @app.route("/cryptography/<crypt_name>", methods = ["GET", "POST"])
 def show_crypt_page(crypt_name):
@@ -43,7 +56,8 @@ def show_crypt_page(crypt_name):
 
             return render_template("cryptography.html", 
                                 crypt_type = crypt_type, 
-                                crypt_type_enum = crypt_type_enums)
+                                crypt_type_enum = crypt_type_enums,
+                                base_url=get_base_url(request.host))
         except Exception as e:
             return jsonify({
                 "message": f"Invalid request {str(e)}"
@@ -54,7 +68,7 @@ def show_crypt_page(crypt_name):
         text = data['plaintext']
         enum_id = int(data['cryptEnumType'])
         # Placeholder for actual encryption logic
-        ciphertext = handler.handler(enum_id, text)
+        ciphertext = handler.crypto_handler(enum_id, text)
         return jsonify(ciphertext=ciphertext)
 
 # Endpoints for setting internal variables

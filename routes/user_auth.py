@@ -5,10 +5,10 @@ import requests
 import json
 from functools import wraps
 from base64 import b64encode
-from celery import shared_task, chain
+from celery import shared_task
 
 from utils.env_handler import get_firebase_key_path, get_firebase_web_api_key, get_base_url
-from crypto.key_gen import generate_master_key, generate_derived_key
+from crypto.key_gen import generate_master_key
 import database as db
 import celerify as cl
 
@@ -36,6 +36,7 @@ def sign_up():
             response = signin_with_email_and_password(email, password)
            
             session["uid"] = user.uid
+            session["username"] = email
 
             if response.status_code == 200:
                 master_key = generate_master_key(password)
@@ -46,6 +47,7 @@ def sign_up():
                 return response
                 # return redirect(url_for("user_auth.signup_success"))
             else:
+                session.clear()
                 raise Exception("Failed to create user")
     
         except Exception as e:
@@ -56,10 +58,11 @@ def signup_success():
     master_key = session.pop("master_key") # Remove master key from session after retrieval
     if master_key:
         encoded_master_key = b64encode(master_key).decode()
-        uid = session.pop("uid")
+        uid = session.get("uid")
         cl.handle_keygen.delay(uid, encoded_master_key)
 
-        return render_template('signup_success.html', master_key=encoded_master_key)
+        return render_template('signup_success.html',                   master_key=encoded_master_key, 
+                               base_url=get_base_url(request.host))
     else:
         return redirect(url_for('signup'))
 
@@ -88,6 +91,9 @@ def logout():
 
     # Clear the idToken cookie by setting its value to an empty string
     response.set_cookie('idToken', '', expires=0)
+
+    # Ending user session
+    session.clear()
 
     return response
 
